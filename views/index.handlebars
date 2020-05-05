@@ -1,150 +1,92 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
-  <title>Burger - Express</title>
-  <!-- Latest compiled and minified CSS & JS -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css">
+  <link rel="stylesheet" href="">
   <script src="https://code.jquery.com/jquery.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
 </head>
 
 <body>
-
   <div class="container">
     <div class="jumbotron">
-      <h1>Burger Express</h1>
-      <h3>The greatest burgers in the galaxy!</h3>
-      <hr>
-      <ul>
-        {{#each plans}}
-        <li>
-          <p>
-            {{this.id}}. {{this.plan}}
+      <div class="header-container">
+        <div class="burger_icon">
+          <i class="fas fa-hamburger fa-7x"></i>
+        </div>
+        <h1>Create a burger!</h1r>
+          <hr>
+      </div>
 
-            <button data-planid="{{this.id}}" class="delplan">Devour Burger!</button>
-          </p>
-        </li>
-        {{/each}}
-      </ul>
-      {{!-- <a href="/" class="btn btn-danger btn-lg">
-                <span class="fa fa-eye"></span> Search Characters</a>
-            <a href="/all" class="btn btn-danger btn-lg">
-                <span class="fa fa-th-list"></span> All Characters</a> --}}
+      <div class="main-container">
+        <section id="available-hamburgers">
+          <ul id="burger-list">
+            {{#each burgers}}
+            {{#unless this.devoured}}
+            <li class="available-burger">
+              <span class="burgers">
+                {{this.id}}
+                {{this.burger_name}}
+              </span>
+              <span id="devour-button">
+                <form action="/{{this.id}}?_method=PUT" method="POST">
+                  <input type="hidden" name="devoured" value="true">
+                  <button class="devour-button" type="submit" class="btn btn-danger btn-md">Devour it!</button>
+                </form>
+              </span>
+            </li>
+            {{/unless}}
+            {{/each}}
+          </ul>
+        </section>
+        <section id="devoured-hamburgers">
+          <ul>
+            {{#each burgers}}
+            {{#if this.devoured}}
+            <li class="devour-burger">
+              {{this.id}}
+              {{this.burger_name}}
+            </li>
+            {{/if}}
+            {{/each}}
+          </ul>
+        </section>
+      </div>
     </div>
-    <div class="row">
+    <div class="card">
+      <div class="card-header">Enter a burger you want to eat. Click the "Submit" button</div>
 
-      <div class="col-lg-6">
+      <br>
 
-        <div class="card">
-          <div class="card-header">
-            Order a burger
-          </div>
-          <div class="card-body">
-            <form id="createplan" class="button-size">
-              <textarea type="text" name="plan"></textarea>
-              <div class="text-right">
-                <br>
-                <button type="submit" class="btn btn-primary btn-md" id="add-btn">
-                  <span class="fa fa-fire"></span> Add burger</button>
-              </div>
+      <div class="text-center">
 
 
-            </form>
-          </div>
-        </div>
+        <section id="new-burger">
+          <form class="create-update-form" action="/" method="POST">
+
+            <div class="form-group">
+              <textarea id="new-burger-text" rows="4" name="burger_name"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-md" id="new-burger-submit">Submit</button>
+          </form>
+          <br>
+          <br>
       </div>
+    </div>
+
+    <p></p>
+
+    </section>
 
 
-      <div class="col-lg-6">
-
-        <div class="card">
-          <div class="card-header">
-            Update your order
-          </div>
-          <div class="card-body">
-            <form id="updateplan" class="button-size">
-              <div class="text-left"> <textarea type="text" name="plan" placeholder=""></textarea></div>
-              <select name="id">
-                {{#each plans}}
-                <option value="{{this.id}}">{{this.plan}}</option>
-                {{/each}}
-              </select>
-              <div class="text-right">
-                <button type="submit" class="btn btn-danger btn-md">Update Burger!</button>
-              </div>
-            </form>
-
-          </div>
-        </div>
-      </div>
-
-      <script type="text/javascript">
-        $(".delplan").on("click", function (event) {
-
-          var id = $(this).data("planid");
-
-
-          $.ajax("/api/plans/" + id, {
-            type: "DELETE"
-          }).then(
-            function () {
-              console.log("deleted id ", id);
-
-              location.reload();
-            }
-          );
-        });
-
-        $("#createplan").on("submit", function (event) {
-
-          event.preventDefault();
-
-
-          var newPlan = {
-            plan: $("#createplan [name=plan]").val().trim()
-          };
-
-
-          $.ajax("/api/plans", {
-            type: "POST",
-            data: newPlan
-          }).then(
-            function () {
-              console.log("created new plan");
-
-              location.reload();
-            }
-          );
-        });
-
-        $("#updateplan").on("submit", function (event) {
-
-          event.preventDefault();
-
-
-          var id = $("[name=id]").val().trim();
-
-          var updatedPlan = {
-            plan: $("#updateplan [name=plan]").val().trim()
-          };
-
-
-          $.ajax("/api/plans/" + id, {
-            type: "PUT",
-            data: updatedPlan
-          }).then(
-            function () {
-              console.log("updated id ", id);
-
-              location.reload();
-            }
-          );
-        });
-      </script>
 
 </body>
 
